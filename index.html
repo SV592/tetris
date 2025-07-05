@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tetris Game</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Inter Font -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* CSS styles will go here (see next section) */
+    </style>
+  </head>
+  <body>
+    <div id="game-container" class="colors">
+      <h2 class="text-xl font-bold mb-4 text-gray-900 dark:text-gray-100">
+        Tetris
+      </h2>
+      <div
+        id="canvas-wrapper"
+        class="w-full relative"
+        style="aspect-ratio: 10/20"
+      >
+        <canvas id="tetris-canvas" tabindex="0"></canvas>
+      </div>
+      <div class="mt-4 text-center">
+        <p class="text-lg font-semibold text-gray-800 dark:text-gray-200">
+          Score: <span id="score-display">0</span>
+        </p>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">
+          Click canvas to start/pause
+        </p>
+      </div>
+    </div>
+
+    <script></script>
+  </body>
+</html>
