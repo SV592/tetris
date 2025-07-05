@@ -475,3 +475,24 @@ function handleResize() {
         draw(game); // Redraw after resize
     }
 }
+
+// Initialization function
+function initGame() {
+    container = document.getElementById("game-container");
+    canvas = document.getElementById("tetris-canvas");
+    ctx = canvas.getContext("2d");
+    scoreDisplay = document.getElementById("score-display"); // Get score display element
+
+    game = freshState(); // Initialize global game state
+
+    handleResize(); // Set initial canvas size
+    window.addEventListener("resize", handleResize);
+    window.addEventListener("keydown", handleKeydown);
+    canvas.addEventListener("click", handleCanvasClick); // Add click listener to canvas
+
+    // Start the game loop (it will immediately pause due to initial paused=true)
+    aniFrame = requestAnimationFrame(loop);
+}
+
+// Start the game when the DOM is fully loaded
+window.onload = initGame;
