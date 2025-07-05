@@ -441,3 +441,37 @@ function handleKeydown(e) {
         draw(game); // Redraw with new state
     }
 }
+
+// Pause, resume, or restart the game by clicking the canvas
+function handleCanvasClick() {
+    if (gameOver) { // Use global gameOver state
+        game = freshState(); // Reset global game state
+        score = 0; // Reset global score
+        paused = false;
+        gameOver = false;
+        draw(game);
+        if (aniFrame) cancelAnimationFrame(aniFrame);
+        aniFrame = requestAnimationFrame(loop); // Restart loop
+    } else {
+        paused = !paused; // Toggle global paused state
+        draw(game); // Redraw to show pause/resume state
+        if (!paused) { // If unpaused, ensure loop is running
+            if (aniFrame) cancelAnimationFrame(aniFrame);
+            aniFrame = requestAnimationFrame(loop);
+        } else { // If paused, cancel animation frame
+            if (aniFrame) cancelAnimationFrame(aniFrame);
+        }
+    }
+}
+
+// Responsive canvas sizing
+function handleResize() {
+    if (container) {
+        const width = container.clientWidth;
+        canvasSize.width = width;
+        canvasSize.height = width * (ROWS / COLS);
+        canvas.width = canvasSize.width;
+        canvas.height = canvasSize.height;
+        draw(game); // Redraw after resize
+    }
+}
