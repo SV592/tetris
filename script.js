@@ -177,3 +177,129 @@ function freshState() {
         score: 0, // Reset score in fresh state
     };
 }
+
+// Draw the game board and current tetromino
+function draw(_g) {
+    const g = _g || game; // Use passed game state or global game state
+    const bw = canvasSize.width / COLS;
+    const bh = canvasSize.height / ROWS;
+
+    ctx.clearRect(0, 0, canvasSize.width, canvasSize.height);
+    ctx.fillStyle = COLORS[0];
+    ctx.fillRect(0, 0, canvasSize.width, canvasSize.height);
+
+    // Draw placed blocks
+    for (let y = 0; y < ROWS; y++)
+        for (let x = 0; x < COLS; x++)
+            if (g.grid[y][x]) {
+                ctx.fillStyle = COLORS[g.grid[y][x]];
+                ctx.fillRect(x * bw, y * bh, bw - 2, bh - 2);
+                ctx.strokeStyle = "#2d2d2d";
+                ctx.lineWidth = 1;
+                ctx.strokeRect(x * bw + 1, y * bh + 1, bw - 3, bh - 3);
+            }
+
+    // Draw the falling tetromino
+    if (!g.over && !paused) {
+        const { current } = g;
+        for (let y = 0; y < current.shape.length; y++)
+            for (let x = 0; x < current.shape[y].length; x++)
+                if (current.shape[y][x]) {
+                    ctx.fillStyle = COLORS[current.shape[y][x]];
+                    ctx.fillRect(
+                        (current.pos.x + x) * bw,
+                        (current.pos.y + y) * bh,
+                        bw - 2,
+                        bh - 2
+                    );
+                    ctx.strokeStyle = "#2d2d2d";
+                    ctx.strokeRect(
+                        (current.pos.x + x) * bw + 1,
+                        (current.pos.y + y) * bh + 1,
+                        bw - 3,
+                        bh - 3
+                    );
+                }
+    }
+
+    // Update score display in HTML
+    if (scoreDisplay) {
+        scoreDisplay.textContent = g.score;
+    }
+
+    // Draw pause overlay
+    if (paused && !g.over) {
+        ctx.fillStyle = "rgba(46,43,44,0.94)"; // Using a slightly transparent version of COLORS[0]
+        ctx.fillRect(0, 0, canvasSize.width, canvasSize.height);
+        ctx.fillStyle = "#fff";
+        ctx.font = `bold ${Math.max(20, bw * 1.1)}px Helvetica`;
+        ctx.textAlign = "center";
+        ctx.fillText("Paused", canvasSize.width / 2, canvasSize.height / 2 - 30); // Adjusted position
+
+        // Draw Score
+        ctx.font = `bold 16px Helvetica`;
+        ctx.fillStyle = "#fff";
+        ctx.globalAlpha = 0.95;
+        ctx.fillText(
+            `Score: ${g.score}`, // Use g.score from the passed state
+            canvasSize.width / 2,
+            canvasSize.height / 2 // Position below "Paused"
+        );
+
+        // Draw controls
+        ctx.font = `bold 13px Helvetica`;
+        ctx.fillStyle = "#fff";
+        ctx.globalAlpha = 0.95;
+        ctx.fillText(
+            "Controls: ← → ↓ (move), F (rotate), D (drop)",
+            canvasSize.width / 2,
+            canvasSize.height / 2 + 32 // Adjusted position
+        );
+        ctx.font = `11px Helvetica`;
+        ctx.fillStyle = "#fff";
+        ctx.globalAlpha = 0.85;
+        ctx.fillText(
+            `Click to resume`,
+            canvasSize.width / 2,
+            canvasSize.height / 2 + 52 // Adjusted position
+        );
+    }
+
+    // Draw game over overlay
+    if (g.over) {
+        ctx.fillStyle = "rgba(46,43,44,0.94)";
+        ctx.fillRect(0, 0, canvasSize.width, canvasSize.height);
+        ctx.fillStyle = "#fff";
+        ctx.font = `bold ${Math.max(18, bw)}px Helvetica`;
+        ctx.textAlign = "center";
+        ctx.fillText("Game Over", canvasSize.width / 2, canvasSize.height / 2 - 20); // Adjusted position
+
+        // Show score on game over screen
+        ctx.font = `bold 16px Helvetica`;
+        ctx.fillStyle = "#fff";
+        ctx.globalAlpha = 0.95;
+        ctx.fillText(
+            `Final Score: ${g.score}`,
+            canvasSize.width / 2,
+            canvasSize.height / 2 + 5
+        );
+
+        // Show a custom message below "Game Over"
+        ctx.font = `bold 14px Helvetica`;
+        ctx.fillStyle = "#fff";
+        ctx.globalAlpha = 0.95;
+        ctx.fillText(
+            "Hire me 😐",
+            canvasSize.width / 2,
+            canvasSize.height / 2 + 32
+        );
+        ctx.font = `12px Helvetica`;
+        ctx.fillStyle = "#fff";
+        ctx.globalAlpha = 0.85;
+        ctx.fillText(
+            "Click to restart",
+            canvasSize.width / 2,
+            canvasSize.height / 2 + 54
+        );
+    }
+}
