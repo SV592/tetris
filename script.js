@@ -352,3 +352,92 @@ function loop() {
     draw(game); // Pass the updated game state to draw
     aniFrame = requestAnimationFrame(loop);
 }
+
+// Keyboard controls
+function handleKeydown(e) {
+    const keysToPreventDefault = [
+        "arrowleft",
+        "arrowright",
+        "arrowdown",
+        "f",
+        "d",
+    ];
+    if (keysToPreventDefault.includes(e.key.toLowerCase())) {
+        e.preventDefault();
+    }
+
+    if (game.over || paused) return;
+
+    let changed = false;
+    let { current, grid } = game; // Destructure from current game state
+
+    if (e.key === "ArrowLeft") {
+        const test = {
+            ...current,
+            pos: { x: current.pos.x - 1, y: current.pos.y },
+        };
+        if (fits(grid, test)) {
+            current = test;
+            changed = true;
+        }
+    } else if (e.key === "ArrowRight") {
+        const test = {
+            ...current,
+            pos: { x: current.pos.x + 1, y: current.pos.y },
+        };
+        if (fits(grid, test)) {
+            current = test;
+            changed = true;
+        }
+    } else if (e.key === "ArrowDown") {
+        const test = {
+            ...current,
+            pos: { x: current.pos.x, y: current.pos.y + 1 },
+        };
+        if (fits(grid, test)) {
+            current = test;
+            changed = true;
+        }
+    } else if (e.key.toLowerCase() === "f") {
+        const originalRotationState = current.rotationState;
+        const nextRotationState = (originalRotationState + 1) % 4;
+
+        const rotated = {
+            ...current,
+            shape: rotate(current.shape),
+            rotationState: nextRotationState,
+        };
+
+        const kicksToTry = getKickData(
+            current.name,
+            originalRotationState,
+            nextRotationState
+        );
+
+        for (const [dx, dy] of kicksToTry) {
+            const test = {
+                ...rotated,
+                pos: { x: current.pos.x + dx, y: current.pos.y + dy },
+            };
+            if (fits(grid, test)) {
+                current = test;
+                changed = true;
+                break;
+            }
+        }
+    } else if (e.key.toLowerCase() === "d") {
+        let test = { ...current };
+        while (
+            fits(grid, { ...test, pos: { x: test.pos.x, y: test.pos.y + 1 } })
+        ) {
+            test = { ...test, pos: { x: test.pos.x, y: test.pos.y + 1 } };
+        }
+        current = test;
+        changed = true;
+    }
+
+    if (changed) {
+        game = { ...game, current }; // Update global game state after successful move/rotation
+        draw(game); // Redraw with new state
+    }
+}
