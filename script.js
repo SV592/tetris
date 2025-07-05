@@ -152,3 +152,28 @@ const COLORS = [
     "#a21caf", // T-piece
     "#ef4444", // Z-piece
 ];
+
+// Game state variables (global)
+let game;
+let paused = true;
+let gameOver = false;
+let canvasSize = { width: 0, height: 0 };
+let aniFrame;
+let score = 0; // Global score variable
+
+let canvas;
+let ctx;
+let container;
+let scoreDisplay; // Reference to the score display element
+
+// Create a fresh game state
+function freshState() {
+    return {
+        grid: Array.from({ length: ROWS }, () => Array(COLS).fill(null)),
+        current: randomTetromino(),
+        over: false,
+        dropTick: 0,
+        delay: 28,
+        score: 0, // Reset score in fresh state
+    };
+}
