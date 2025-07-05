@@ -236,16 +236,6 @@ function draw(_g) {
         ctx.textAlign = "center";
         ctx.fillText("Paused", canvasSize.width / 2, canvasSize.height / 2 - 30); // Adjusted position
 
-        // Draw Score
-        ctx.font = `bold 16px Helvetica`;
-        ctx.fillStyle = "#fff";
-        ctx.globalAlpha = 0.95;
-        ctx.fillText(
-            `Score: ${g.score}`, // Use g.score from the passed state
-            canvasSize.width / 2,
-            canvasSize.height / 2 // Position below "Paused"
-        );
-
         // Draw controls
         ctx.font = `bold 13px Helvetica`;
         ctx.fillStyle = "#fff";
@@ -253,7 +243,7 @@ function draw(_g) {
         ctx.fillText(
             "Controls: ← → ↓ (move), F (rotate), D (drop)",
             canvasSize.width / 2,
-            canvasSize.height / 2 + 32 // Adjusted position
+            canvasSize.height / 2 + 22 // Adjusted position
         );
         ctx.font = `11px Helvetica`;
         ctx.fillStyle = "#fff";
@@ -261,7 +251,7 @@ function draw(_g) {
         ctx.fillText(
             `Click to resume`,
             canvasSize.width / 2,
-            canvasSize.height / 2 + 52 // Adjusted position
+            canvasSize.height / 2 + 42 // Adjusted position
         );
     }
 
