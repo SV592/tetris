@@ -303,3 +303,52 @@ function draw(_g) {
         );
     }
 }
+
+// Main game loop
+function loop() {
+    if (game.over || paused) {
+        draw(game);
+        aniFrame = requestAnimationFrame(loop); // Keep loop running even when paused/over for drawing
+        return;
+    }
+
+    let { current, dropTick, score: sc } = game;
+    let over = game.over;
+    const { grid, delay } = game;
+
+    dropTick++;
+
+    // Drop tetromino down by one row if enough ticks have passed
+    if (dropTick >= delay) {
+        dropTick = 0;
+        const test = {
+            ...current,
+            pos: { x: current.pos.x, y: current.pos.y + 1 },
+        };
+        if (fits(grid, test)) {
+            current = test;
+        } else {
+            // Merge tetromino into grid and check for line clears
+            merge(grid, current);
+            const lines = clearLines(grid);
+            sc += lines * 100;
+            if (grid[0].some(Boolean)) {
+                over = true;
+                gameOver = true; // Update global gameOver state
+            } else {
+                current = randomTetromino();
+            }
+        }
+    }
+    score = sc; // Update global score variable
+    game = { // Update global game state
+        ...game,
+        grid,
+        current,
+        dropTick,
+        score: sc,
+        over,
+    };
+    draw(game); // Pass the updated game state to draw
+    aniFrame = requestAnimationFrame(loop);
+}
