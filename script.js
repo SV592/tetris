@@ -101,3 +101,54 @@ function randomTetromino() {
 function rotate(shape) {
     return shape[0].map((_, i) => shape.map((row) => row[i]).reverse());
 }
+
+// Check if a tetromino fits in the grid at its current position
+function fits(grid, tetro) {
+    const { shape, pos } = tetro;
+    for (let y = 0; y < shape.length; y++)
+        for (let x = 0; x < shape[y].length; x++)
+            if (
+                shape[y][x] &&
+                (pos.y + y >= ROWS || // Check bottom bound
+                    pos.x + x < 0 || // Check left bound
+                    pos.x + x >= COLS || // Check right bound
+                    (pos.y + y >= 0 && grid[pos.y + y][pos.x + x])) // Check for collision with existing blocks (only if within top boundary)
+            )
+                return false;
+    return true;
+}
+
+// Merge a tetromino into the grid (when it lands)
+function merge(grid, tetro) {
+    const { shape, pos } = tetro;
+    for (let y = 0; y < shape.length; y++)
+        for (let x = 0; x < shape[y].length; x++)
+            if (shape[y][x] && pos.y + y >= 0)
+                grid[pos.y + y][pos.x + x] = shape[y][x];
+}
+
+// Clear completed lines and return the number of lines cleared
+function clearLines(grid) {
+    let lines = 0;
+    for (let y = ROWS - 1; y >= 0; y--) {
+        if (grid[y].every(Boolean)) {
+            grid.splice(y, 1);
+            grid.unshift(Array(COLS).fill(null));
+            lines++;
+            y++;
+        }
+    }
+    return lines;
+}
+
+// Color palette for tetrominos and background
+const COLORS = [
+    "#2E2B2C", // background
+    "#06b6d4", // I-piece
+    "#2563EB", // J-piece
+    "#f59e42", // L-piece
+    "#FFD600", // O-piece
+    "#22d3ee", // S-piece
+    "#a21caf", // T-piece
+    "#ef4444", // Z-piece
+];
